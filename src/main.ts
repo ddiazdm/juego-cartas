@@ -14,61 +14,46 @@ function muestraPuntuacion() {
     }
 }
 
-function dameCarta() {
-    let random = Math.floor(Math.random() * 10) + 1;
-    if (random > 7) {
-        random += 2;
-    }
-    return random;
+const generarNumeroAleatorio = () => {
+    return Math.floor(Math.random() * 10) + 1;
 }
+
+function generarCarta(numeroAleatorio: number): number {
+    return numeroAleatorio > 7 ? numeroAleatorio += 2 : numeroAleatorio;
+}
+
 
 function obtenerValorCarta(carta: number): number {
+    return carta > 7 ? 0.5 : carta;
+}
+
+function obtenerUrlCarta(carta: number): string {
+    const baseURL = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/";
     switch (carta) {
-        case 10:
-        case 11:
-        case 12:
-            return 0.5;
-        default:
-            return carta;
+        case 1: return `${baseURL}1_as-copas.jpg`;
+        case 2: return `${baseURL}2_dos-copas.jpg`;
+        case 3: return `${baseURL}3_tres-copas.jpg`;
+        case 4: return `${baseURL}4_cuatro-copas.jpg`;
+        case 5: return `${baseURL}5_cinco-copas.jpg`;
+        case 6: return `${baseURL}6_seis-copas.jpg`;
+        case 7: return `${baseURL}7_siete-copas.jpg`;
+        case 10: return `${baseURL}10_sota-copas.jpg`;
+        case 11: return `${baseURL}11_caballo-copas.jpg`;
+        case 12: return `${baseURL}12_rey-copas.jpg`;
+        default: return `${baseURL}back.jpg`;
     }
 }
 
-function mostrarCarta(carta: number) {
-    const cartaDiv = document.getElementById('mostrarCarta') as HTMLDivElement;
 
-    switch (carta) {
-        case 1:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/1_as-copas.jpg" alt="1 de copas">`;
-            break;
-        case 2:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/2_dos-copas.jpg" alt="2 de copas">`;
-            break;
-        case 3:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/3_tres-copas.jpg" alt="3 de copas">`;
-            break;
-        case 4:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/4_cuatro-copas.jpg" alt="4 de copas">`;
-            break;
-        case 5:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/5_cinco-copas.jpg" alt="5 de copas">`;
-            break;
-        case 6:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/6_seis-copas.jpg" alt="6 de copas">`;
-            break;
-        case 7:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/7_siete-copas.jpg" alt="7 de copas">`;
-            break;
-        case 10:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/10_sota-copas.jpg" alt="sota de copas">`;
-            break;
-        case 11:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/11_caballo-copas.jpg" alt="caballo de copas">`;
-            break;
-        case 12:
-            cartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/copas/12_rey-copas.jpg" alt="rey de copas">`;
-            break;
+function pintarCarta(urlCarta: string) {
+    const elementoImagen = document.getElementById("cartaImage") as HTMLImageElement;
+    if (elementoImagen) {
+        elementoImagen.src = urlCarta;
+        elementoImagen.style.display = 'block';
     }
 }
+
+  
 
 function finalizarJuego(mensaje: string) {
     juegoTerminado = true;
@@ -84,9 +69,9 @@ function nuevaPartida() {
     puntuacion = 0;
     juegoTerminado = false;
     muestraPuntuacion();
-    let mostrarCartaDiv = document.getElementById('mostrarCarta');
+    let mostrarCartaDiv = document.getElementById('cartaImage') as HTMLImageElement;
     if (mostrarCartaDiv) {
-        mostrarCartaDiv.innerHTML = `<img src="https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg" alt="hidden">`;
+        mostrarCartaDiv.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
     }
 
     document.getElementById('game-over')!.style.display = 'none';
@@ -95,20 +80,33 @@ function nuevaPartida() {
     document.getElementById('nuevaPartida')!.style.display = 'none';
 }
 
+const gestionarPartida = () => {
+    if (puntuacion === 7.5) {
+      finalizarJuego("He ganado la partida");
+    }
+  
+    if (puntuacion > 7.5) {
+      finalizarJuego("Game Over: Te has pasado de 7.5 puntos.");
+    }
+  };
+
 document.addEventListener('DOMContentLoaded', () => {
     muestraPuntuacion();
+    const elementoDameCarta = document.getElementById("dameCarta");
 
-    document.getElementById("dameCarta")?.addEventListener("click", () => {
-        if (juegoTerminado) return;
-        let carta = dameCarta();
-        let valorCarta = obtenerValorCarta(carta);
-        puntuacion += valorCarta;
-        muestraPuntuacion();
-        mostrarCarta(carta);
-        if (puntuacion > 7.5) {
-            finalizarJuego("Game Over: Te has pasado de 7.5 puntos.");
-        }
-    });
+    if (elementoDameCarta && elementoDameCarta instanceof HTMLButtonElement) {
+        elementoDameCarta.addEventListener("click", () => {
+            const numeroAleatorio = generarNumeroAleatorio();
+            let carta = generarCarta(numeroAleatorio);
+            const urlCarta = obtenerUrlCarta(carta);
+            pintarCarta(urlCarta);
+            let valorCarta = obtenerValorCarta(carta);
+            puntuacion += valorCarta;
+            muestraPuntuacion();
+            obtenerUrlCarta(carta);
+            gestionarPartida();
+        });
+    }
 
     document.getElementById("mePlanto")?.addEventListener("click", () => {
         if (juegoTerminado) return;
