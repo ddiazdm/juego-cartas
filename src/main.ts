@@ -3,7 +3,6 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./style.css";
 
 let puntuacion = 0;
-let juegoTerminado = false;
 
 function muestraPuntuacion() {
     const scoreDisplay = document.getElementById('score-display') as HTMLDivElement;
@@ -56,7 +55,6 @@ function pintarCarta(urlCarta: string) {
   
 
 function finalizarJuego(mensaje: string) {
-    juegoTerminado = true;
     const gameOverDiv = document.getElementById('game-over') as HTMLDivElement;
     gameOverDiv.style.display = 'block';
     gameOverDiv.innerText = mensaje;
@@ -67,7 +65,6 @@ function finalizarJuego(mensaje: string) {
 
 function nuevaPartida() {
     puntuacion = 0;
-    juegoTerminado = false;
     muestraPuntuacion();
     let mostrarCartaDiv = document.getElementById('cartaImage') as HTMLImageElement;
     if (mostrarCartaDiv) {
@@ -109,7 +106,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     document.getElementById("mePlanto")?.addEventListener("click", () => {
-        if (juegoTerminado) return;
         let mensaje = "";
         if (puntuacion < 4) {
             mensaje = "Has sido muy conservador.";
