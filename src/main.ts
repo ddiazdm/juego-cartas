@@ -3,19 +3,22 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./style.css";
 
 let puntuacion = 0;
+const elementoImagen = document.getElementById("cartaImage") as HTMLImageElement;
+const scoreDisplay = document.getElementById('score-display') as HTMLDivElement;
+const gameOverDiv = document.getElementById('game-over') as HTMLDivElement;
+const elementoDameCarta = document.getElementById("dameCarta");
+const mePlanto = document.getElementById("mePlanto");
+const elementoPartida = document.getElementById('nuevaPartida');
 
 function muestraPuntuacion() {
-    const scoreDisplay = document.getElementById('score-display') as HTMLDivElement;
-    if (puntuacion <= 7.5) {
-        scoreDisplay.innerText = `Puntuación: ${puntuacion}`;
-    } else {
-        scoreDisplay.innerText = `Puntuación: ${puntuacion} (¡Te has pasado de la puntuación!)`;
+    if (scoreDisplay) {
+        scoreDisplay.innerText = puntuacion <= 7.5 ? `Puntuación: ${puntuacion}` : `Puntuación: ${puntuacion} (¡Te has pasado de la puntuación!)`;
     }
+
 }
 
-const generarNumeroAleatorio = () => {
-    return Math.floor(Math.random() * 10) + 1;
-}
+const generarNumeroAleatorio = () => Math.floor(Math.random() * 10) + 1;
+
 
 function generarCarta(numeroAleatorio: number): number {
     return numeroAleatorio > 7 ? numeroAleatorio += 2 : numeroAleatorio;
@@ -45,51 +48,51 @@ function obtenerUrlCarta(carta: number): string {
 
 
 function pintarCarta(urlCarta: string) {
-    const elementoImagen = document.getElementById("cartaImage") as HTMLImageElement;
     if (elementoImagen) {
         elementoImagen.src = urlCarta;
         elementoImagen.style.display = 'block';
     }
 }
 
-  
+
 
 function finalizarJuego(mensaje: string) {
-    const gameOverDiv = document.getElementById('game-over') as HTMLDivElement;
-    gameOverDiv.style.display = 'block';
-    gameOverDiv.innerText = mensaje;
-    document.getElementById('dameCarta')?.setAttribute('disabled', 'true');
-    document.getElementById('mePlanto')?.setAttribute('disabled', 'true');
-    document.getElementById('nuevaPartida')!.style.display = 'block';
+    if (gameOverDiv){
+        gameOverDiv.style.display = 'block';
+        gameOverDiv.innerText = mensaje;
+    }
+    if (elementoDameCarta ) elementoDameCarta.setAttribute('disabled', 'true');
+
+    if (mePlanto) mePlanto.setAttribute('disabled', 'true');
+    
+    if (elementoPartida) elementoPartida.style.display = 'block';
 }
 
 function nuevaPartida() {
     puntuacion = 0;
     muestraPuntuacion();
-    let mostrarCartaDiv = document.getElementById('cartaImage') as HTMLImageElement;
-    if (mostrarCartaDiv) {
-        mostrarCartaDiv.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
+    if (elementoImagen) {
+        elementoImagen.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
     }
 
-    document.getElementById('game-over')!.style.display = 'none';
-    document.getElementById('dameCarta')!.removeAttribute('disabled');
-    document.getElementById('mePlanto')!.removeAttribute('disabled');
-    document.getElementById('nuevaPartida')!.style.display = 'none';
+    if (gameOverDiv) gameOverDiv!.style.display = 'none';
+    if (elementoDameCarta) elementoDameCarta.removeAttribute('disabled');
+    if (mePlanto) mePlanto.removeAttribute('disabled');
+    if (elementoPartida) elementoPartida.style.display = 'none';
 }
 
 const gestionarPartida = () => {
     if (puntuacion === 7.5) {
-      finalizarJuego("He ganado la partida");
+        finalizarJuego("He ganado la partida");
     }
-  
+
     if (puntuacion > 7.5) {
-      finalizarJuego("Game Over: Te has pasado de 7.5 puntos.");
+        finalizarJuego("Game Over: Te has pasado de 7.5 puntos.");
     }
-  };
+};
 
 document.addEventListener('DOMContentLoaded', () => {
     muestraPuntuacion();
-    const elementoDameCarta = document.getElementById("dameCarta");
 
     if (elementoDameCarta && elementoDameCarta instanceof HTMLButtonElement) {
         elementoDameCarta.addEventListener("click", () => {
@@ -105,21 +108,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    document.getElementById("mePlanto")?.addEventListener("click", () => {
-        let mensaje = "";
-        if (puntuacion < 4) {
-            mensaje = "Has sido muy conservador.";
-        } else if (puntuacion === 5) {
-            mensaje = "Te ha entrado el canguelo eh?";
-        } else if (puntuacion > 5 && puntuacion < 7.5) {
-            mensaje = "Casi casi...";
-        } else if (puntuacion === 7.5) {
-            mensaje = "¡Lo has clavado! ¡Enhorabuena!";
-        }
-        finalizarJuego(mensaje);
-    });
+    if (mePlanto && mePlanto instanceof HTMLButtonElement) {
+        mePlanto.addEventListener("click", () => {
+            let mensaje = "";
+            if (puntuacion < 4) {
+                mensaje = "Has sido muy conservador.";
+            } else if (puntuacion === 5) {
+                mensaje = "Te ha entrado el canguelo eh?";
+            } else if (puntuacion > 5 && puntuacion < 7.5) {
+                mensaje = "Casi casi...";
+            } else if (puntuacion === 7.5) {
+                mensaje = "¡Lo has clavado! ¡Enhorabuena!";
+            }
+            finalizarJuego(mensaje);
+        });
+    }
 
-    document.getElementById("nuevaPartida")?.addEventListener("click", () => {
+    elementoPartida?.addEventListener("click", () => {
         nuevaPartida();
     });
 });
+
+
+
