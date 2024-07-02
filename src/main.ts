@@ -3,15 +3,15 @@ import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import "./style.css";
 
 let puntuacion = 0;
-const elementoImagen = document.getElementById("cartaImage") as HTMLImageElement;
-const scoreDisplay = document.getElementById('score-display') as HTMLDivElement;
-const gameOverDiv = document.getElementById('game-over') as HTMLDivElement;
+const elementoImagen = document.getElementById("cartaImage");
+const scoreDisplay = document.getElementById('score-display');
+const gameOverDiv = document.getElementById('game-over');
 const elementoDameCarta = document.getElementById("dameCarta");
 const mePlanto = document.getElementById("mePlanto");
 const elementoPartida = document.getElementById('nuevaPartida');
 
 function muestraPuntuacion() {
-    if (scoreDisplay) {
+    if (scoreDisplay && scoreDisplay instanceof HTMLDivElement) {
         scoreDisplay.innerText = puntuacion <= 7.5 ? `Puntuación: ${puntuacion}` : `Puntuación: ${puntuacion} (¡Te has pasado de la puntuación!)`;
     }
 
@@ -48,7 +48,7 @@ function obtenerUrlCarta(carta: number): string {
 
 
 function pintarCarta(urlCarta: string) {
-    if (elementoImagen) {
+    if (elementoImagen && elementoImagen instanceof HTMLImageElement) {
         elementoImagen.src = urlCarta;
         elementoImagen.style.display = 'block';
     }
@@ -57,28 +57,46 @@ function pintarCarta(urlCarta: string) {
 
 
 function finalizarJuego(mensaje: string) {
-    if (gameOverDiv){
+    if (gameOverDiv && gameOverDiv instanceof HTMLDivElement) {
         gameOverDiv.style.display = 'block';
         gameOverDiv.innerText = mensaje;
     }
-    if (elementoDameCarta ) elementoDameCarta.setAttribute('disabled', 'true');
+    if (elementoDameCarta && elementoDameCarta instanceof HTMLButtonElement) {
+        elementoDameCarta.setAttribute('disabled', 'true')
+    };
 
-    if (mePlanto) mePlanto.setAttribute('disabled', 'true');
-    
-    if (elementoPartida) elementoPartida.style.display = 'block';
+    if (mePlanto && mePlanto instanceof HTMLButtonElement) {
+        mePlanto.setAttribute('disabled', 'true')
+    };
+
+    if (elementoPartida && elementoPartida instanceof HTMLButtonElement) {
+        elementoPartida.style.display = 'block';
+    }
 }
 
 function nuevaPartida() {
     puntuacion = 0;
     muestraPuntuacion();
-    if (elementoImagen) {
+    
+    if (elementoImagen && elementoImagen instanceof HTMLImageElement) {
         elementoImagen.src = "https://raw.githubusercontent.com/Lemoncode/fotos-ejemplos/main/cartas/back.jpg";
     }
 
-    if (gameOverDiv) gameOverDiv!.style.display = 'none';
-    if (elementoDameCarta) elementoDameCarta.removeAttribute('disabled');
-    if (mePlanto) mePlanto.removeAttribute('disabled');
-    if (elementoPartida) elementoPartida.style.display = 'none';
+    if (gameOverDiv && gameOverDiv instanceof HTMLDivElement) {
+        gameOverDiv!.style.display = 'none';
+    }
+
+    if (elementoDameCarta && elementoDameCarta instanceof HTMLButtonElement) {
+        elementoDameCarta.removeAttribute('disabled');
+    }
+
+    if (mePlanto && mePlanto instanceof HTMLButtonElement) {
+        mePlanto.removeAttribute('disabled');
+    }
+
+    if (elementoPartida && elementoPartida instanceof HTMLButtonElement) {
+        elementoPartida.style.display = 'none';
+    }
 }
 
 const gestionarPartida = () => {
@@ -124,9 +142,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    elementoPartida?.addEventListener("click", () => {
-        nuevaPartida();
-    });
+    if (elementoPartida && elementoPartida instanceof HTMLButtonElement) {
+        elementoPartida.addEventListener("click", () => {
+            nuevaPartida();
+        });
+    }
 });
 
 
